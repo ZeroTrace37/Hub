@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZeroTrace37 — Free Security Tools</title>
+<meta name="description" content="Free, offline-first security tools by ZeroTrace37: regex & payload builder, JWT decoder, HTTP security header analyzer and more. No signup, nothing leaves your browser.">
+<style>
+  :root{
+    --bg:#0a0c10; --panel:#11141b; --panel-2:#161a23; --line:#232a37;
+    --txt:#c9d4e5; --muted:#6b7789; --accent:#39ff88; --accent-dim:#1f9c56;
+    --warn:#ff5b5b; --amber:#ffb347; --blue:#5cc8ff;
+    --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono","Fira Code",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:var(--mono);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+
+  header{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0d1017,#0a0c10);
+    position:sticky;top:0;z-index:20}
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+    max-width:1100px;margin:0 auto;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px;font-size:16px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .hright{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .langtog{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .lt{padding:6px 10px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+  .lt+.lt{border-left:1px solid var(--line)}
+  .lt.on{color:var(--accent);background:rgba(57,255,136,.10)}
+  .cta{font-size:12.5px;padding:7px 12px;border:1px solid var(--accent-dim);border-radius:6px;
+    color:var(--accent);background:rgba(57,255,136,.06)}
+  .cta:hover{background:rgba(57,255,136,.14);text-decoration:none}
+
+  .hero{padding:48px 0 24px;border-bottom:1px solid var(--line);
+    background:radial-gradient(1200px 300px at 20% -10%, rgba(57,255,136,.06), transparent)}
+  .hero h1{margin:0 0 12px;font-size:34px;line-height:1.2;color:#e6edf7;letter-spacing:.5px}
+  .hero h1 .g{color:var(--accent)}
+  .hero p{margin:0;color:var(--muted);font-size:15px;max-width:640px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:20px;
+    padding:5px 12px;background:var(--panel-2)}
+  .pill b{color:var(--accent);font-weight:400}
+
+  .section-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);
+    margin:34px 0 14px}
+  .grid{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:940px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;
+    display:flex;flex-direction:column;gap:10px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--accent-dim);transform:translateY(-2px)}
+  .card .icon{width:38px;height:38px;border-radius:8px;background:rgba(57,255,136,.08);
+    border:1px solid var(--accent-dim);display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-size:18px}
+  .card h3{margin:0;font-size:15px;color:#e6edf7}
+  .card .tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .card p{margin:0;color:var(--muted);font-size:13px;flex:1}
+  .card .open{margin-top:6px;align-self:flex-start;font-size:12.5px;padding:7px 12px;
+    border:1px solid var(--accent-dim);border-radius:6px;color:var(--accent);background:rgba(57,255,136,.06)}
+  .card .open:hover{background:rgba(57,255,136,.14);text-decoration:none}
+  .card.soon{opacity:.55}
+  .card.soon .icon{color:var(--muted);border-color:var(--line);background:var(--panel-2)}
+  .card.soon .badge{font-size:11px;color:var(--amber);border:1px solid var(--amber);
+    border-radius:5px;padding:3px 8px;align-self:flex-start;background:rgba(255,179,71,.06)}
+
+  .optin{margin:34px 0;background:linear-gradient(135deg,#0e1620,#11141b);
+    border:1px solid var(--accent-dim);border-radius:10px;padding:22px}
+  .optin h3{margin:0 0 6px;color:var(--accent);font-size:17px}
+  .optin p{margin:0 0 12px;color:var(--muted);font-size:13px}
+  .optin form{display:flex;gap:10px;flex-wrap:wrap}
+  .optin input{flex:1;min-width:220px;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--txt);font-family:var(--mono);font-size:13.5px;border-radius:6px;padding:11px}
+  .optin input:focus{outline:none;border-color:var(--accent-dim)}
+  .optin .btn{font-family:var(--mono);background:var(--accent);color:#062412;border:1px solid var(--accent);
+    font-weight:700;font-size:13px;border-radius:6px;padding:11px 16px;cursor:pointer}
+  .optin .btn:hover{background:#5affa0}
+  .optin .msg{margin-top:10px;font-size:12.5px}
+
+  footer{border-top:1px solid var(--line);margin-top:20px;padding:24px 0;color:var(--muted);font-size:12px}
+  footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><span class="dot"></span>ZeroTrace37</div>
+    <div class="hright">
+      <div class="langtog" id="langtog">
+        <span class="lt" data-lang="de">DE</span>
+        <span class="lt" data-lang="en">EN</span>
+      </div>
+      <a class="cta" href="https://tracekeeper.gumroad.com" target="_blank" rel="noopener" data-i18n="cta">Shop →</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1 data-i18n="h1">Kostenlose <span class="g">Security-Tools</span></h1>
+    <p data-i18n="hero_p">Schnelle, praktische Tools für Pentester &amp; Bug-Bounty-Hunter. Kein Signup, kein Backend — alles läuft direkt in deinem Browser.</p>
+    <div class="pills">
+      <span class="pill" data-i18n="pill1"><b>100%</b> im Browser</span>
+      <span class="pill" data-i18n="pill2"><b>Kein</b> Signup</span>
+      <span class="pill" data-i18n="pill3"><b>Keine</b> Daten verlassen dein Gerät</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="section-label" data-i18n="tools_label">Tools</div>
+  <div class="grid" id="grid"></div>
+
+  <div class="optin">
+    <h3 data-i18n="o_h3">Neue Tools zuerst bekommen</h3>
+    <p data-i18n="o_p">Ein bis zwei Mails im Monat: neue kostenlose Tools, Recon-Tricks und Updates aus der ZeroTrace37-Werkbank. Kein Spam, jederzeit abbestellbar.</p>
+    <form id="optform" action="https://formspree.io/f/xqpabzyl" method="POST">
+      <input type="email" name="email" data-i18n-ph="ph_email" placeholder="deine@mail.tld" required>
+      <button class="btn" type="submit" data-i18n="o_btn">Eintragen</button>
+    </form>
+    <div class="msg" id="optmsg"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>ZeroTrace37 &middot; Security Tooling &middot; <a href="https://zerotrace37.com" target="_blank" rel="noopener">zerotrace37.com</a> &middot; <a href="https://tracekeeper.gumroad.com" target="_blank" rel="noopener">Shop</a></div>
+    <div data-i18n="f_browser">Nur für autorisierte Tests.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* =========================================================
+     TOOLS — hier neue Tools eintragen (bis zu 10 und mehr).
+     status: "live"  -> anklickbar, mit url
+     status: "soon"  -> als "Bald verfügbar" ausgegraut (url optional)
+     icon: kurzes Zeichen/Emoji. name/desc: {de, en}.
+     Neues Tool = einen Block kopieren, ausfüllen, url setzen.
+     ========================================================= */
+  var TOOLS=[
+    {
+      status:"live",
+      icon:"⌂",
+      url:"https://zerotrace37.github.io/payload-builder/",
+      name:{de:"Regex & Payload Builder", en:"Regex & Payload Builder"},
+      desc:{de:"Live-Regex-Matching mit Recon-Bibliothek plus 8 Payload-Klassen und Encoder-Kette (URL, Base64, Unicode …).",
+            en:"Live regex matching with a recon library plus 8 payload classes and an encoder chain (URL, Base64, Unicode …)."}
+    },
+    {
+      status:"live",
+      icon:"🔑",
+      url:"https://zerotrace37.github.io/jwt-decoder/",
+      name:{de:"JWT Decoder", en:"JWT Decoder"},
+      desc:{de:"Header, Payload & Claims sofort dekodiert, Ablauf-Check und optionale HS256-Signaturprüfung.",
+            en:"Decode header, payload & claims instantly, expiry check and optional HS256 signature verification."}
+    },
+    {
+      status:"live",
+      icon:"🛡",
+      url:"https://zerotrace37.github.io/header-analyzer/",
+      name:{de:"Security Header Analyzer", en:"Security Header Analyzer"},
+      desc:{de:"HTTP-Response-Header einfügen → Note A–F und konkrete Fixes für HSTS, CSP, X-Frame-Options & Co.",
+            en:"Paste HTTP response headers → grade A–F and concrete fixes for HSTS, CSP, X-Frame-Options & more."}
+    }
+    /* ---- VORLAGE für ein neues Tool (Komma oben nicht vergessen) ----
+    ,{
+      status:"live",                       // "live" oder "soon"
+      icon:"#",
+      url:"https://zerotrace37.github.io/DEIN-REPO/",
+      name:{de:"Tool-Name", en:"Tool name"},
+      desc:{de:"Kurzbeschreibung auf Deutsch.", en:"Short description in English."}
+    }
+    ------------------------------------------------------------------- */
+  ];
+
+  var T={
+    de:{
+      cta:"Shop →",
+      h1:'Kostenlose <span class="g">Security-Tools</span>',
+      hero_p:"Schnelle, praktische Tools für Pentester & Bug-Bounty-Hunter. Kein Signup, kein Backend — alles läuft direkt in deinem Browser.",
+      pill1:"<b>100%</b> im Browser", pill2:"<b>Kein</b> Signup", pill3:"<b>Keine</b> Daten verlassen dein Gerät",
+      tools_label:"Tools",
+      open:"Öffnen →", soon:"Bald verfügbar",
+      o_h3:"Neue Tools zuerst bekommen",
+      o_p:"Ein bis zwei Mails im Monat: neue kostenlose Tools, Recon-Tricks und Updates aus der ZeroTrace37-Werkbank. Kein Spam, jederzeit abbestellbar.",
+      ph_email:"deine@mail.tld", o_btn:"Eintragen",
+      f_browser:"Nur für autorisierte Tests.",
+      m_invalid:"Bitte gültige E-Mail eingeben.", m_sending:"Sende ...",
+      m_ok:"Eingetragen. Willkommen an Bord — neue Tools landen bald in deinem Postfach.",
+      m_send_err:"Fehler beim Senden. Bitte später erneut versuchen.",
+      m_net_err:"Netzwerkfehler. Bitte später erneut versuchen."
+    },
+    en:{
+      cta:"Shop →",
+      h1:'Free <span class="g">Security Tools</span>',
+      hero_p:"Fast, practical tools for pentesters & bug-bounty hunters. No signup, no backend — everything runs right in your browser.",
+      pill1:"<b>100%</b> in-browser", pill2:"<b>No</b> signup", pill3:"<b>No</b> data leaves your device",
+      tools_label:"Tools",
+      open:"Open →", soon:"Coming soon",
+      o_h3:"Get new tools first",
+      o_p:"One or two emails a month: new free tools, recon tricks and updates from the ZeroTrace37 workbench. No spam, unsubscribe anytime.",
+      ph_email:"you@mail.tld", o_btn:"Subscribe",
+      f_browser:"Authorized testing only.",
+      m_invalid:"Please enter a valid email.", m_sending:"Sending ...",
+      m_ok:"Subscribed. Welcome aboard — new tools will hit your inbox soon.",
+      m_send_err:"Send failed. Please try again later.",
+      m_net_err:"Network error. Please try again later."
+    }
+  };
+  var saved=null; try{saved=localStorage.getItem("zt_lang")}catch(e){}
+  var LANG=(saved==="de"||saved==="en")?saved:((navigator.language||"en").toLowerCase().indexOf("de")===0?"de":"en");
+  function t(k){return (T[LANG]&&T[LANG][k]!=null)?T[LANG][k]:((T.en&&T.en[k]!=null)?T.en[k]:k)}
+  function esc(s){return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+
+  function renderGrid(){
+    var grid=$("#grid"); grid.innerHTML="";
+    TOOLS.forEach(function(tool){
+      var live=tool.status==="live";
+      var card=document.createElement(live?"a":"div");
+      card.className="card"+(live?"":" soon");
+      if(live){card.href=tool.url;card.target="_blank";card.rel="noopener";}
+      var nm=tool.name[LANG]||tool.name.en;
+      var ds=tool.desc[LANG]||tool.desc.en;
+      card.innerHTML=
+        '<div class="icon">'+esc(tool.icon||"#")+'</div>'+
+        '<h3>'+esc(nm)+'</h3>'+
+        '<p>'+esc(ds)+'</p>'+
+        (live?'<span class="open">'+t("open")+'</span>'
+             :'<span class="badge">'+t("soon")+'</span>');
+      grid.appendChild(card);
+    });
+  }
+
+  function applyI18n(){
+    document.documentElement.lang=LANG;
+    $$("[data-i18n]").forEach(function(el){var k=el.getAttribute("data-i18n");
+      if(T[LANG][k]!=null){ if(/<[a-z]/i.test(T[LANG][k])) el.innerHTML=T[LANG][k]; else el.textContent=T[LANG][k]; }});
+    $$("[data-i18n-ph]").forEach(function(el){var k=el.getAttribute("data-i18n-ph");if(T[LANG][k]!=null)el.setAttribute("placeholder",T[LANG][k])});
+    $$("#langtog .lt").forEach(function(b){b.classList.toggle("on",b.dataset.lang===LANG)});
+    renderGrid();
+  }
+  $$("#langtog .lt").forEach(function(b){b.addEventListener("click",function(){
+    LANG=b.dataset.lang;try{localStorage.setItem("zt_lang",LANG)}catch(e){}applyI18n()})});
+
+  var optform=$("#optform"),optmsg=$("#optmsg");
+  optform.addEventListener("submit",function(e){
+    e.preventDefault();
+    var input=optform.querySelector("input"),val=input.value.trim();
+    if(!val||val.indexOf("@")<1){optmsg.style.color="var(--warn)";optmsg.textContent=t("m_invalid");return;}
+    var btn=optform.querySelector("button");btn.disabled=true;
+    optmsg.style.color="var(--muted)";optmsg.textContent=t("m_sending");
+    fetch(optform.getAttribute("action"),{method:"POST",body:new FormData(optform),headers:{"Accept":"application/json"}})
+    .then(function(r){btn.disabled=false;
+      if(r.ok){optmsg.style.color="var(--accent)";optmsg.textContent=t("m_ok");optform.reset();}
+      else{r.json().then(function(d){optmsg.style.color="var(--warn)";
+        optmsg.textContent=(d&&d.errors&&d.errors[0]&&d.errors[0].message)||t("m_send_err")})
+        .catch(function(){optmsg.style.color="var(--warn)";optmsg.textContent=t("m_send_err")})}
+    }).catch(function(){btn.disabled=false;optmsg.style.color="var(--warn)";optmsg.textContent=t("m_net_err")});
+  });
+
+  applyI18n();
+})();
+</script>
+</body>
+</html>
